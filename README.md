@@ -46,7 +46,7 @@ Explore the TourNest interface through the screenshots below.
 <p align="center">
   <img src="assets/screenshots/travel_videos.png" alt="Travel Videos" width="250">
   &nbsp;&nbsp;
-  <img src="assets/screenshots/booking_form.png" alt="Trip Request Form" width="250">
+  <img src="WhatsApp Image 2026-10-26 at 16.42.48.jpeg" alt="Trip Request Form" width="250">
 </p>
 
 <p align="center">
