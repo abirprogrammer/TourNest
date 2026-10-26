@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../controllers/app_state_controller.dart';
+import '../models/booking_item.dart';
 import '../models/destination.dart';
 
 class TicketBookingScreen extends StatefulWidget {
@@ -47,24 +49,37 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
       return;
     }
 
+    final bookingItem = BookingItem(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      destinationName: widget.destination.name,
+      location: widget.destination.location,
+      imageUrl: widget.destination.imageUrl,
+      travellers: _travellers,
+      date: '${_travelDate!.day}/${_travelDate!.month}/${_travelDate!.year}',
+      estimatedCost: widget.destination.estimatedCost,
+      status: 'Confirmed',
+      createdAt: 'Today',
+    );
+
+    AppStateController().addBooking(bookingItem);
+
     showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Request prepared'),
+        title: const Text('Booking Confirmed! 🎉'),
         content: Text(
-          'Destination: ${widget.destination.name}\n'
+          'Your booking for ${widget.destination.name} has been successfully confirmed and added to your Bookings list!\n\n'
           'Traveller(s): $_travellers\n'
-          'Date: ${_travelDate!.day}/${_travelDate!.month}/${_travelDate!.year}\n\n'
-          'This is a demo booking form. No ticket or payment has been created. '
-          'Connect a booking provider/backend to confirm real tickets.',
+          'Date: ${_travelDate!.day}/${_travelDate!.month}/${_travelDate!.year}',
         ),
         actions: [
-          TextButton(
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: green),
             onPressed: () {
               Navigator.pop(dialogContext);
-              Navigator.pop(context);
+              Navigator.pop(context); // return to previous screen
             },
-            child: const Text('Done'),
+            child: const Text('View Bookings'),
           ),
         ],
       ),
@@ -195,7 +210,7 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
             child: FilledButton.icon(
               onPressed: _submitBooking,
               icon: const Icon(Icons.confirmation_num_outlined),
-              label: const Text('Continue booking'),
+              label: const Text('Confirm & Book Ticket'),
               style: FilledButton.styleFrom(
                 backgroundColor: green,
                 foregroundColor: Colors.white,

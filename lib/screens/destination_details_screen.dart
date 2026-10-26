@@ -1,19 +1,47 @@
 import 'package:flutter/material.dart';
 
+import '../controllers/app_state_controller.dart';
 import '../services/external_link_service.dart';
 import '../models/destination.dart';
 import 'ticket_booking_screen.dart';
 
-class DestinationDetailsScreen extends StatelessWidget {
+class DestinationDetailsScreen extends StatefulWidget {
   final Destination destination;
 
   const DestinationDetailsScreen({super.key, required this.destination});
+
+  @override
+  State<DestinationDetailsScreen> createState() =>
+      _DestinationDetailsScreenState();
+}
+
+class _DestinationDetailsScreenState extends State<DestinationDetailsScreen> {
+  final AppStateController _appState = AppStateController();
+
+  @override
+  void initState() {
+    super.initState();
+    _appState.addListener(_onChanged);
+  }
+
+  void _onChanged() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _appState.removeListener(_onChanged);
+    super.dispose();
+  }
 
   static const green = Color(0xFF168765);
   static const muted = Color(0xFF75837A);
 
   @override
   Widget build(BuildContext context) {
+    final destination = widget.destination;
+    final isFav = _appState.isFavourite(destination);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAF8),
       body: CustomScrollView(
@@ -54,6 +82,27 @@ class DestinationDetailsScreen extends StatelessWidget {
               ),
             ),
             actions: [
+              IconButton(
+                tooltip: isFav ? 'Remove from favorites' : 'Add to favorites',
+                onPressed: () {
+                  final added = _appState.toggleFavourite(destination);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        added
+                            ? 'Added to favorites ❤️'
+                            : 'Removed from favorites',
+                      ),
+                      duration: const Duration(seconds: 1),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                },
+                icon: Icon(
+                  isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                  color: isFav ? Colors.redAccent : Colors.white,
+                ),
+              ),
               IconButton(
                 tooltip: 'Open map',
                 onPressed: () => openExternalUrl(destination.mapUrl),
@@ -257,6 +306,27 @@ class _InfoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return DescriptionTileContent(icon: icon, title: title, value: value);
+  }
+}
+
+class DescriptionTileContent extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String value;
+
+  const DescriptionTileContent({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.value,
+  });
+
+  static const green = Color(0xFF168765);
+  static const muted = Color(0xFF75837A);
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(13),
       decoration: BoxDecoration(
@@ -266,11 +336,11 @@ class _InfoTile extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: DestinationDetailsScreen.green, size: 21),
+          Icon(icon, color: green, size: 21),
           const SizedBox(height: 9),
           Text(title,
-              style: const TextStyle(color: DestinationDetailsScreen.muted,
-                  fontSize: 11)),
+              style: const TextStyle(
+                  color: muted, fontSize: 11)),
           const SizedBox(height: 5),
           Text(value,
               style: const TextStyle(

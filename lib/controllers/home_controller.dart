@@ -36,11 +36,13 @@ class HomeController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleFavourite(Destination destination) {
-    if (!favourites.add(destination.id)) {
+  bool toggleFavourite(Destination destination) {
+    final added = favourites.add(destination.id);
+    if (!added) {
       favourites.remove(destination.id);
     }
     notifyListeners();
+    return added;
   }
 
   bool isFavourite(Destination destination) =>

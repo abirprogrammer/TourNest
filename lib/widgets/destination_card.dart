@@ -22,9 +22,14 @@ class DestinationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = isDark ? const Color(0xFF1E2D26) : const Color(0xFFF0F5F1);
+    final textColor = isDark ? Colors.white : const Color(0xFF34473D);
+    final mutedColor = isDark ? Colors.white70 : muted;
+
     return Material(
-      color: const Color(0xFFF0F5F1),
-      borderRadius: BorderRadius.circular(17),
+      color: cardBg,
+      borderRadius: BorderRadius.circular(16),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
@@ -32,7 +37,7 @@ class DestinationCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AspectRatio(
-              aspectRatio: 1.48,
+              aspectRatio: 1.55,
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -41,9 +46,9 @@ class DestinationCard extends StatelessWidget {
                     fit: BoxFit.cover,
                     loadingBuilder: (context, child, progress) {
                       if (progress == null) return child;
-                      return const ColoredBox(
-                        color: Color(0xFFE5ECE7),
-                        child: Center(
+                      return ColoredBox(
+                        color: isDark ? const Color(0xFF24362D) : const Color(0xFFE5ECE7),
+                        child: const Center(
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
                             color: green,
@@ -51,30 +56,30 @@ class DestinationCard extends StatelessWidget {
                         ),
                       );
                     },
-                    errorBuilder: (_, __, ___) => const ColoredBox(
-                      color: Color(0xFFE5ECE7),
-                      child: Center(
+                    errorBuilder: (_, __, ___) => ColoredBox(
+                      color: isDark ? const Color(0xFF24362D) : const Color(0xFFE5ECE7),
+                      child: const Center(
                         child: Icon(Icons.landscape_rounded,
-                            color: green, size: 38),
+                            color: green, size: 34),
                       ),
                     ),
                   ),
                   Positioned(
-                    top: 8,
-                    right: 8,
+                    top: 6,
+                    right: 6,
                     child: Material(
-                      color: Colors.black.withAlpha(90),
+                      color: Colors.black.withAlpha(110),
                       shape: const CircleBorder(),
                       child: InkWell(
                         onTap: onFavouriteTap,
                         customBorder: const CircleBorder(),
                         child: Padding(
-                          padding: const EdgeInsets.all(7),
+                          padding: const EdgeInsets.all(6),
                           child: Icon(
                             isFavourite
                                 ? Icons.favorite_rounded
                                 : Icons.favorite_border_rounded,
-                            size: 17,
+                            size: 16,
                             color: isFavourite ? Colors.redAccent : Colors.white,
                           ),
                         ),
@@ -85,33 +90,34 @@ class DestinationCard extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     destination.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Color(0xFF34473D),
+                    style: TextStyle(
+                      color: textColor,
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                  const SizedBox(height: 7),
+                  const SizedBox(height: 5),
                   Row(
                     children: [
                       if (showLocation) ...[
-                        const Icon(Icons.location_on_outlined,
-                            color: muted, size: 14),
-                        const SizedBox(width: 3),
+                        Icon(Icons.location_on_outlined,
+                            color: mutedColor, size: 13),
+                        const SizedBox(width: 2),
                         Expanded(
                           child: Text(
                             destination.location.split(',').first,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(color: muted, fontSize: 10),
+                            style: TextStyle(color: mutedColor, fontSize: 10),
                           ),
                         ),
                       ] else
@@ -120,16 +126,16 @@ class DestinationCard extends StatelessWidget {
                             destination.category,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(color: muted, fontSize: 10),
+                            style: TextStyle(color: mutedColor, fontSize: 10),
                           ),
                         ),
                       const Icon(Icons.star_rounded,
-                          color: Color(0xFFE7B84D), size: 15),
+                          color: Color(0xFFE7B84D), size: 14),
                       const SizedBox(width: 2),
                       Text(
                         destination.rating,
-                        style: const TextStyle(
-                          color: Color(0xFF65736A),
+                        style: TextStyle(
+                          color: isDark ? Colors.white70 : const Color(0xFF65736A),
                           fontSize: 10,
                           fontWeight: FontWeight.w600,
                         ),
